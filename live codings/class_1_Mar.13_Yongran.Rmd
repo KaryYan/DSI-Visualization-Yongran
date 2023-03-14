@@ -1,0 +1,27 @@
+---
+title: "Class_1_Mar13,2023"
+author: "Yongran Yan"
+date: "2023-03-13"
+output: html_document
+---
+```{r}
+# install packages required for this course
+install.packages('socviz')
+
+# attach the packages
+library('socviz')
+library('tidyverse')
+library('ggplot2')
+
+# install another package
+install.packages('gapminder')
+library(gapminder)
+
+# to look at the data
+View(gapminder)
+
+# to make a scatter plot of the data set
+p <- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point()
+```
