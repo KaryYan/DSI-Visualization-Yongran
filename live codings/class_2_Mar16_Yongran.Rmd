@@ -1,0 +1,89 @@
+---
+title: "Class2"
+author: "Yongran Yan"
+date: "2023-03-16"
+output: html_document
+---
+
+```{r}
+# to attach the dataset and package
+library(gapminder)
+library(ggplot2)
+library(socviz)
+library(tidyverse)
+
+# to assign an object for the plot
+p <- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+
+# to make a scatterplot
+p + geom_point()
+
+# to try another geom (smooth: line plot)
+p + geom_smooth(method = 'lm')
+
+# to combine multiple geoms
+p + geom_point() + geom_smooth(method = 'lm')
+
+# to transform x axis to log
+p + geom_point() + geom_smooth(method = 'lm') + 
+  scale_x_log10()
+
+# to change the axis label
+p + geom_point() + geom_smooth(method = 'lm') + 
+  scale_x_log10(labels = scales::dollar)
+
+# to assign color to the graph based on continents in the data set
+p <- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp,
+                          color = continent))
+p + geom_point() + geom_smooth(method = 'lm') + 
+  scale_x_log10(labels = scales::dollar)
+
+# to set visual elements to a particular color (not mapping)
+p <- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point(color = 'purple') + geom_smooth(method = 'lm') + 
+  scale_x_log10(labels = scales::dollar)
+
+# to change the transparency of the points
+p <- ggplot(data = gapminder,
+            mapping = aes(x = gdpPercap, y = lifeExp))
+p + geom_point(alpha = 0.3) + geom_smooth(method = 'lm') + 
+  scale_x_log10(labels = scales::dollar)
+
+# to save the plot
+# export under the plot view
+
+# to copy a graph style from R gallary
+# Libraries
+library(tidyverse)
+install.packages('hrbrthemes')
+library(hrbrthemes)
+install.packages('viridis')
+library(viridis)
+
+# create a dataset
+#data <- data.frame(
+ # name=c( rep("A",500), rep("B",500), rep("B",500), rep("C",20), rep('D', 100)  ),
+ # value=c( rnorm(500, 10, 5), rnorm(500, 13, 1), rnorm(500, 18, 1), rnorm(20, 25, 4), rnorm(100, 12, 1) )
+#)
+
+# Plot using our gapminder data set
+gapminder %>%
+  ggplot( aes(x=continent, y=lifeExp, fill=continent)) +
+    geom_boxplot() +
+    scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+    geom_jitter(color="black", size=0.4, alpha=0.9) +
+    theme_ipsum() +
+    theme(
+      legend.position="none",
+      plot.title = element_text(size=11)
+    ) +
+    ggtitle("Distribution of life expentancy on different continents") +
+    xlab("")
+
+# to save the image
+ggsave(filename = 'sampleimage.png')
+```
+
