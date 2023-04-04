@@ -1,0 +1,73 @@
+---
+title: "Assignment 4"
+author: "Yongran Yan"
+date: "2023-04-02"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, message=FALSE}
+# install the Open Data Toronto package
+# install.packages('opendatatoronto')
+# install.packages('viridis')
+
+# load packages required for this assignment
+library(ggplot2)
+library(opendatatoronto)
+library(gganimate)
+library(gifski)
+library(viridis)
+
+# to look at the list of resources available for download in my dataset
+list_package_resources('https://open.toronto.ca/dataset/outbreaks-in-toronto-healthcare-institutions/')
+
+# get the data set: outbreak data from 2022 using its id
+outbreak_data_2022 <- get_resource('cc2694ce-6162-4288-b345-eb6ed9e54c46')
+
+# change some column names to make it easier for typing
+colnames(outbreak_data_2022)[4] <- 'OutbreakSetting'
+colnames(outbreak_data_2022)[6] <- 'CausativeAgent1'
+colnames(outbreak_data_2022)[5] <- 'OutbreakType'
+
+# the first layer of bar graph
+p <- ggplot(data = outbreak_data_2022,
+                          mapping = aes(x = CausativeAgent1, fill = OutbreakType)) + 
+  geom_bar() +
+  scale_fill_viridis_d(name = 'Outbreak types')
+
+# the second layer to add labels, caption and alt-text and adjust the x-axis
+p1 <- p + labs(title = 'Outbreak caused by various causative agents in multiple settings in 2022',
+       x = 'Causative agents',
+       y = 'Number of cases 2022',
+       caption = 'Figure: Outbreak caused by various causative agents in multiple settings in 2022. 
+       X-axis: Various primary causative agents are shown on the X-axis. 
+       Y-axis: number of cases reported. 
+       The outbreak type is color-coded: purple - enteric, green - other, yellow - respiratory.
+       Six outbreak settings are included: LTCH (long-term care home), retirement home, 
+       hospital- acute care, hospital- chronic care and hospital- psychiatic and transitional center. 
+       Original source: https://open.toronto.ca/dataset/outbreaks-in-toronto-healthcare-institutions/',
+       alt = 'This is a dynamic figure showing outbreak caused by various causative reagents in multiple settings in 2022.
+       The title indicates the different outbreak settings including LTCH (long-term care home), retirement home, 
+       hospital- acute care, hospital- chronic care and hospital- psychiatic and transitional center. 
+       X-axis shows the primary causative agents including coronavirus, COVID-19, CPE unspecified (NDM), CPE unspecified(VIM),
+       Enterovirus/Rhinovirus, Influenza A(H3), InfluenzaA (H3N2), InfluenzaA (not subtyped), Metapneumovirus, 
+       Norovirus-like, Parainfluenza, Respiratory syncytial virus, Rhinovirus and unable to identify (from left to right).
+       Y-axis shows the number of cases reported, with a range of 0 to slightly higher than 350.
+       The bars are also color-coded by the outbreak types, where purple indicates enteric, green indicates other and yellow indicates respiratory.
+       The trend shows that COVID-19 is the dominant causative agents in all settings, with highest number of cases reported in LTCH and 
+       the least number in trainsitional center. In general, LTCH has the most cases of various outbreaks, while transitional centre has the least.
+       ') +
+  theme(plot.title = element_text(hjust = 0.5, face = 'bold'),
+        axis.text.x = element_text(angle = 90, vjust=0.5),
+        plot.caption = element_text(hjust = 0.5))
+
+p2 <- p1 + transition_states(OutbreakSetting) +
+  labs(title = 'Outbreak Setting : {closest_state}') +
+  theme(plot.title = element_text(hjust = 0.5, face = 'bold'))
+animate(p2, duration = 20, renderer = gifski_renderer())
+
+# to save the animation
+anim_save('Visualization_by_R_Yongran.gif', animation = last_animation(), path = '/Users/kary/Desktop/DSI-Visualization/Assignments')
+```
+
